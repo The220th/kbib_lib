@@ -1,0 +1,8 @@
+ruff
+mypy
+typing-extensions
+types-PyYAML
+twine
+build
+setuptools
+pyinstaller
