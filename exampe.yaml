@@ -1,0 +1,141 @@
+global:
+  standard: APA  # APA or GOST
+  include_doi: False
+  doi_as_url: False
+  target_lang: "en"  # en or ru
+  needed: "/path/to/needed.txt"
+
+items:
+  articleid12007:
+    type: article
+    title: Title 1.
+    authors:
+      - Author 1.
+      - Author 2.
+      - et al
+    year: 2007
+    journal: Journal Name
+    volume: 30
+    issue: 2
+    pages: 496–507
+    DOI: 10.5555/3333333.4444444
+    file: You can put optional fields, like this.
+
+  proceedingsid22007:
+    type: proceedings
+    title: "Title 2: If Colon: Appears, Then Use Quotation Marks"
+    authors:
+      - Author 1.
+      - Author 2.
+      - Author 3.
+    year: 2007
+    conference: "Conf name: If Colon: Appears, Then Use Quotation Marks"
+    place_and_date: Vienna, Austria, 01–29 February 2007
+    city: Berlin, Heidelberg
+    publisher: Springer
+    volume: ""  # do empty "" if you dont know or remove field at all
+    issue: ""  # do empty "" if you dont know or remove field at all
+    pages: 115–143
+    DOI: 10.5555/3333333.4444444
+    elif: You can put optional fields, like this.
+
+  bookid32008:
+    type: book
+    title: Book Title
+    authors:
+      - Author 1.
+    year: 2008
+    city: Cheltenham
+    publisher: Publisher name
+    pages: ""
+    field: You can put optional fields, like this.
+
+  preprintid42023:
+    type: preprint
+    title: Title
+    authors:
+      - Author 1.
+      - Author 2.
+      - Author 3.
+      - Author 4.
+      - Author 5.
+      - Author 6.
+      - Author 7.
+      - Author 8.
+      - et al
+    year: 2023
+    publisher_and_id: "arXiv preprint. arXiv: 2304.77777"
+    DOI: 10.5555/3333333.4444444
+    something: You can put optional fields, like this.
+
+  thesisid52010:
+    type: thesis
+    title: Title of this.
+    authors:
+      - Name S.
+    extra_text: ""  # "Автореф. дис. … д-ра техн. наук." or " Дис. … канд. философ. наук."
+    year: 2010
+    city: Mancheste
+    publisher: University of Anything
+    what: You can put optional fields, like this.
+
+  id1:
+    type: article
+    title: ""
+    authors:
+      - a1
+    year: 
+    journal: ""
+    volume: 
+    issue: 
+    pages: 
+    DOI: 
+    file: ""
+
+  id2:
+    type: proceedings
+    title: ""
+    authors:
+      - a1
+    year: 
+    conference: ""
+    place_and_date: ""
+    city: ""
+    publisher: ""
+    volume: ""
+    issue: ""
+    pages: 
+    DOI: 
+    file: ""
+
+  id3:
+    type: book
+    title: ""
+    authors:
+      - a1
+    year: 
+    city: ""
+    publisher: ""
+    pages: ""
+    file: ""
+
+  id4:
+    type: preprint
+    title: ""
+    authors:
+      - a1
+    year: 
+    publisher_and_id: "arXiv preprint. arXiv: 2304.77777"
+    DOI: 
+    file: ""
+
+  id5:
+    type: thesis
+    title: ""
+    authors:
+      - a1
+    extra_text: ""  # "Автореф. дис. … д-ра техн. наук." or " Дис. … канд. философ. наук."
+    year: 
+    city: ""
+    publisher: ""
+    file: ""
