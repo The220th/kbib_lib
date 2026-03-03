@@ -363,36 +363,38 @@ def form_proceedings_4(standard: BibStandards,
 
 
 def dict_to_bibs(d: dict, needed: list[str] | None) -> list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, ProceedingsBib]]:
+    
     res: list[Union[PreprintBib, BookBib,
                     ThesisBib, ArticleBib, ProceedingsBib]] = []
-    if needed is not None:
-        needed_set = set(needed)
+    if needed is None:
+        needed = list(d.keys())
 
-    for k_i in d:
-        if needed is None or k_i in needed_set:
-            if "type" not in d[k_i]:
-                raise ValueError(f"bib \"{d[k_i]}\" must contains \"type\". ")
+    for k_i in needed:
+        if k_i not in d:
+            raise ValueError(f"\"{k_i}\" does not exists. ")
+        if "type" not in d[k_i]:
+            raise ValueError(f"bib \"{d[k_i]}\" must contains \"type\". ")
+        else:
+            type_i = str(d[k_i]["type"]).strip().lower()
+            value = d[k_i]
+
+            el: Union[PreprintBib, BookBib,
+                        ThesisBib, ArticleBib, ProceedingsBib]
+            if type_i == BibTypes.PREPRINT.value:
+                el = PreprintBib(id=k_i, **value)
+            elif type_i == BibTypes.BOOK.value:
+                el = BookBib(id=k_i, **value)
+            elif type_i == BibTypes.THESIS.value:
+                el = ThesisBib(id=k_i, **value)
+            elif type_i == BibTypes.ARTICLE.value:
+                el = ArticleBib(id=k_i, **value)
+            elif type_i == BibTypes.PROCEEDINGS.value:
+                el = ProceedingsBib(id=k_i, **value)
             else:
-                type_i = str(d[k_i]["type"]).strip().lower()
-                value = d[k_i]
+                raise ValueError(
+                    f"Undefined type=\"{type_i}\" from \"{d[k_i]}\". Only can be: {[el.value for el in BibTypes]}")
 
-                el: Union[PreprintBib, BookBib,
-                          ThesisBib, ArticleBib, ProceedingsBib]
-                if type_i == BibTypes.PREPRINT.value:
-                    el = PreprintBib(id=k_i, **value)
-                elif type_i == BibTypes.BOOK.value:
-                    el = BookBib(id=k_i, **value)
-                elif type_i == BibTypes.THESIS.value:
-                    el = ThesisBib(id=k_i, **value)
-                elif type_i == BibTypes.ARTICLE.value:
-                    el = ArticleBib(id=k_i, **value)
-                elif type_i == BibTypes.PROCEEDINGS.value:
-                    el = ProceedingsBib(id=k_i, **value)
-                else:
-                    raise ValueError(
-                        f"Undefined type=\"{type_i}\" from \"{d[k_i]}\". Only can be: {[el.value for el in BibTypes]}")
-
-                res.append(el)
+            res.append(el)
 
     return res
 
@@ -418,11 +420,21 @@ def bibs_to_str(bibs: list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, Pr
     return res
 
 
-def form_bibs_from_yaml(yaml_path: Path, needed: list[str] | None = None) -> list[str]:
+def form_bibs_from_yaml(yaml_path: Path) -> list[str]:
     with open(yaml_path, "r", encoding="utf-8") as fd:
         data = yaml.safe_load(fd)
 
     settings = data["global"]
+
+    needed: list[str] | None
+    if "needed" in settings:
+        buff = Path(settings["needed"])
+        with open(buff, "r", encoding="utf-8") as fd:
+            s = fd.read()
+        needed = [line for line in s.split("\n") if line]
+    else:
+        needed = None
+
     standard_set = str(settings["standard"]).strip().upper()
     for existing_standard_i in BibStandards:
         if existing_standard_i.name == standard_set:
