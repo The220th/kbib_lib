@@ -43,9 +43,9 @@ def get_words_by_lang() -> dict[str, str]:
 def remove_dot_and_strip(s: str) -> str:
     res = s.strip()
     while res[-1] == ".":
-        res = s.strip()
+        res = res.strip()
         res = res[:-1]
-    res = s.strip()
+    res = res.strip()
     return res
 
 
@@ -363,7 +363,7 @@ def form_proceedings_4(standard: BibStandards,
 
 
 def dict_to_bibs(d: dict, needed: list[str] | None) -> list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, ProceedingsBib]]:
-    
+
     res: list[Union[PreprintBib, BookBib,
                     ThesisBib, ArticleBib, ProceedingsBib]] = []
     if needed is None:
@@ -379,7 +379,7 @@ def dict_to_bibs(d: dict, needed: list[str] | None) -> list[Union[PreprintBib, B
             value = d[k_i]
 
             el: Union[PreprintBib, BookBib,
-                        ThesisBib, ArticleBib, ProceedingsBib]
+                      ThesisBib, ArticleBib, ProceedingsBib]
             if type_i == BibTypes.PREPRINT.value:
                 el = PreprintBib(id=k_i, **value)
             elif type_i == BibTypes.BOOK.value:

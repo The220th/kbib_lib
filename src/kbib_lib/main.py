@@ -17,6 +17,7 @@ def main():
     # [print(f"{i+1}) {el}") for i, el in enumerate(form_bibs_from_yaml("../examples/1.yaml"))]
     args = parse_args()
     s = "\n".join(form_bibs_from_yaml(args.input_file))
+    print(s)
     with open(args.output_file, "w", encoding="utf-8") as fd:
         fd.write(s)
         fd.flush()
