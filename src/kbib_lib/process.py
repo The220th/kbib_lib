@@ -133,7 +133,7 @@ def form_preprint(standard: BibStandards,
     authors_str = form_authors_str(standard, authors)
     title = remove_dot_and_strip(title)
     publisher_and_id = remove_dot_and_strip(publisher_and_id)
-    if doi is not None:
+    if doi is not None and INCLUDE_DOI:
         doi = remove_dot_and_strip(doi)
         doi_str = f" {form_doi_str(doi)}."
     else:
@@ -170,22 +170,22 @@ def form_book(standard: BibStandards,
 
     if standard == BibStandards.APA:
         if city is not None and publisher is not None:
-            city_publisher_str = " {city}: {publisher}."
+            city_publisher_str = f" {city}: {publisher}."
         elif city is not None and publisher is None:
-            city_publisher_str = " {city}."
+            city_publisher_str = f" {city}."
         elif city is None and publisher is not None:
-            city_publisher_str = " {publisher}."
+            city_publisher_str = f" {publisher}."
         else:
             city_publisher_str = ""
 
         res = f"{authors_str} ({year}) {title}.{city_publisher_str}"
     elif standard == BibStandards.GOST:
         if city is not None and publisher is not None:
-            city_publisher_str = " {city}: {publisher},"
+            city_publisher_str = f" {city}: {publisher},"
         elif city is not None and publisher is None:
-            city_publisher_str = " {city},"
+            city_publisher_str = f" {city},"
         elif city is None and publisher is not None:
-            city_publisher_str = " {publisher},"
+            city_publisher_str = f" {publisher},"
         else:
             city_publisher_str = ""
         res = f"{authors_str} {title}.{city_publisher_str} {year}."
@@ -257,7 +257,7 @@ def form_article(standard: BibStandards,
     title = remove_dot_and_strip(title)
     journal = remove_dot_and_strip(journal)
 
-    if doi is not None:
+    if doi is not None and INCLUDE_DOI:
         doi = remove_dot_and_strip(doi)
         doi_str = f" {form_doi_str(doi)}."
     else:
@@ -301,7 +301,7 @@ def form_proceedings(standard: BibStandards,
     title = remove_dot_and_strip(title)
     conference = remove_dot_and_strip(conference)
 
-    if doi is not None:
+    if doi is not None and INCLUDE_DOI:
         doi = remove_dot_and_strip(doi)
         doi_str = f" {form_doi_str(doi)}."
     else:
@@ -317,11 +317,11 @@ def form_proceedings(standard: BibStandards,
         place_and_date_str = f", {remove_dot_and_strip(place_and_date)}" if place_and_date is not None else ""
 
         if city is not None and publisher is not None:
-            city_publisher_str = " {city}: {publisher},"
+            city_publisher_str = f" {city}: {publisher},"
         elif city is not None and publisher is None:
-            city_publisher_str = " {city},"
+            city_publisher_str = f" {city},"
         elif city is None and publisher is not None:
-            city_publisher_str = " {publisher},"
+            city_publisher_str = f" {publisher},"
         else:
             city_publisher_str = ""
 
@@ -362,34 +362,37 @@ def form_proceedings_4(standard: BibStandards,
                             volume=item.volume, issue=item.issue, pages=item.pages, doi=item.doi)
 
 
-def dict_to_bibs(d: dict) -> list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, ProceedingsBib]]:
+def dict_to_bibs(d: dict, needed: list[str] | None) -> list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, ProceedingsBib]]:
     res: list[Union[PreprintBib, BookBib,
                     ThesisBib, ArticleBib, ProceedingsBib]] = []
+    if needed is not None:
+        needed_set = set(needed)
 
     for k_i in d:
-        if "type" not in d[k_i]:
-            raise ValueError(f"bib \"{d[k_i]}\" must contains \"type\". ")
-        else:
-            type_i = str(d[k_i]["type"]).strip().lower()
-            value = d[k_i]
-
-            el: Union[PreprintBib, BookBib,
-                      ThesisBib, ArticleBib, ProceedingsBib]
-            if type_i == BibTypes.PREPRINT.value:
-                el = PreprintBib(id=k_i, **value)
-            elif type_i == BibTypes.BOOK.value:
-                el = BookBib(id=k_i, **value)
-            elif type_i == BibTypes.THESIS.value:
-                el = ThesisBib(id=k_i, **value)
-            elif type_i == BibTypes.ARTICLE.value:
-                el = ArticleBib(id=k_i, **value)
-            elif type_i == BibTypes.PROCEEDINGS.value:
-                el = ProceedingsBib(id=k_i, **value)
+        if needed is None or k_i in needed_set:
+            if "type" not in d[k_i]:
+                raise ValueError(f"bib \"{d[k_i]}\" must contains \"type\". ")
             else:
-                raise ValueError(
-                    f"Undefined type=\"{type_i}\" from \"{d[k_i]}\". Only can be: {[el.value for el in BibTypes]}")
+                type_i = str(d[k_i]["type"]).strip().lower()
+                value = d[k_i]
 
-            res.append(el)
+                el: Union[PreprintBib, BookBib,
+                          ThesisBib, ArticleBib, ProceedingsBib]
+                if type_i == BibTypes.PREPRINT.value:
+                    el = PreprintBib(id=k_i, **value)
+                elif type_i == BibTypes.BOOK.value:
+                    el = BookBib(id=k_i, **value)
+                elif type_i == BibTypes.THESIS.value:
+                    el = ThesisBib(id=k_i, **value)
+                elif type_i == BibTypes.ARTICLE.value:
+                    el = ArticleBib(id=k_i, **value)
+                elif type_i == BibTypes.PROCEEDINGS.value:
+                    el = ProceedingsBib(id=k_i, **value)
+                else:
+                    raise ValueError(
+                        f"Undefined type=\"{type_i}\" from \"{d[k_i]}\". Only can be: {[el.value for el in BibTypes]}")
+
+                res.append(el)
 
     return res
 
@@ -398,35 +401,46 @@ def bibs_to_str(bibs: list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, Pr
     res: list[str] = []
     for bib_i in bibs:
         if isinstance(bib_i, PreprintBib):
-            form_preprint_4(standard=standard, item=bib_i)
+            bib_text = form_preprint_4(standard=standard, item=bib_i)
         elif isinstance(bib_i, BookBib):
-            form_book_4(standard=standard, item=bib_i)
+            bib_text = form_book_4(standard=standard, item=bib_i)
         elif isinstance(bib_i, ThesisBib):
-            form_thesis_4(standard=standard, item=bib_i)
+            bib_text = form_thesis_4(standard=standard, item=bib_i)
         elif isinstance(bib_i, ArticleBib):
-            form_article_4(standard=standard, item=bib_i)
+            bib_text = form_article_4(standard=standard, item=bib_i)
         elif isinstance(bib_i, ProceedingsBib):
-            form_proceedings_4(standard=standard, item=bib_i)
+            bib_text = form_proceedings_4(standard=standard, item=bib_i)
         else:
             raise TypeError(f"Unknown class: {bib_i}")
+
+        res.append(bib_text)
+
     return res
 
 
-def form_bibs_from_yaml(yaml_path: Path, needed: list[str]) -> list[str]:
+def form_bibs_from_yaml(yaml_path: Path, needed: list[str] | None = None) -> list[str]:
     with open(yaml_path, "r", encoding="utf-8") as fd:
         data = yaml.safe_load(fd)
 
     settings = data["global"]
-    standard = settings["standard"]
+    standard_set = str(settings["standard"]).strip().upper()
+    for existing_standard_i in BibStandards:
+        if existing_standard_i.name == standard_set:
+            standard = existing_standard_i
+            break
+    if not isinstance(standard, BibStandards):
+        raise ValueError(
+            f"standard must be only from {[el.name for el in BibStandards]}.")
     global INCLUDE_DOI
     INCLUDE_DOI = settings["include_doi"]
     global DOI_AS_URL
     DOI_AS_URL = settings["doi_as_url"]
     global kbib_lib_out_lang
-    kbib_lib_out_lang = settings["target_lang"]
+    kbib_lib_out_lang = str(settings["target_lang"]).strip().lower()
 
     bibs_dict = data["items"]
     bibs: list[Union[PreprintBib, BookBib, ThesisBib,
-                     ArticleBib, ProceedingsBib]] = dict_to_bibs(bibs_dict)
+                     ArticleBib, ProceedingsBib]] = dict_to_bibs(bibs_dict, needed)
     res = bibs_to_str(bibs, standard)
+
     return res

@@ -21,6 +21,19 @@ def check_str_for_non_value(v) -> str | None:
     return str(v)
 
 
+def process_authors(authors: list[str]):
+    if isinstance(authors, list):
+        for el in authors:
+            if not isinstance(el, str):
+                raise ValueError(
+                    f"authors=\"{authors}\" must be list[str], but \"{el}\" is not str")
+            if not el.strip():
+                raise ValueError(f"\"{el}\" must be not empty str")
+        return authors
+    else:
+        raise ValueError(f"authors=\"{authors}\" must be list[str]")
+
+
 class PreprintBib(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
@@ -29,24 +42,22 @@ class PreprintBib(BaseModel):
     authors: list[str]
     year: int
     publisher_and_id: str
-    doi: str | None = Field(default=None, alias="DOI")
+    doi: str | None = Field(default=None)
+
+    @field_validator("id", "title", "publisher_and_id", mode="before")
+    @classmethod
+    def it_must_be_not_none(cls, v):
+        return check_str_for_non_value(v)
+
+    @field_validator("authors", mode="before")
+    @classmethod
+    def check_authors(cls, v):
+        return process_authors(v)
 
     @field_validator("doi", mode="before")
     @classmethod
     def empty_string_to_none(cls, v):
         return check_str_for_non_value(v)
-
-
-def check_authors(authors: list[str]):
-    if isinstance(authors, list):
-        for el in authors:
-            if not isinstance(el, str):
-                raise ValueError(
-                    f"authors=\"{authors}\" must be list[str], but \"{el}\" is not str")
-            if not el.strip():
-                raise ValueError(f"\"{el}\" must be not empty str")
-    else:
-        raise ValueError(f"authors=\"{authors}\" must be list[str]")
 
 
 class BookBib(BaseModel):
@@ -68,7 +79,7 @@ class BookBib(BaseModel):
     @field_validator("authors", mode="before")
     @classmethod
     def check_authors(cls, v):
-        return check_authors(v)
+        return process_authors(v)
 
     @field_validator("pages", "city", "publisher", mode="before")
     @classmethod
@@ -95,7 +106,7 @@ class ThesisBib(BaseModel):
     @field_validator("authors", mode="before")
     @classmethod
     def check_authors(cls, v):
-        return check_authors(v)
+        return process_authors(v)
 
     @field_validator("extra_text", mode="before")
     @classmethod
@@ -114,7 +125,7 @@ class ArticleBib(BaseModel):
     volume: int | None = Field(default=None)
     issue: int | None = Field(default=None)
     pages: str | None = Field(default=None)
-    doi: str | None = Field(default=None, alias="DOI")
+    doi: str | None = Field(default=None)
 
     @field_validator("id", "title", "journal", mode="before")
     @classmethod
@@ -124,11 +135,11 @@ class ArticleBib(BaseModel):
     @field_validator("authors", mode="before")
     @classmethod
     def check_authors(cls, v):
-        return check_authors(v)
+        return process_authors(v)
 
     @field_validator("volume", "issue", mode="before")
     @classmethod
-    def preprocess_year(cls, v):
+    def preprocess_int(cls, v):
         if isinstance(v, str):
             v = v.strip()
             if not v:
@@ -142,7 +153,7 @@ class ArticleBib(BaseModel):
         else:
             raise ValueError(f"year=\"{v}\" must be int or str")
 
-    @field_validator("extra_text", "pages", "doi", mode="before")
+    @field_validator("pages", "doi", mode="before")
     @classmethod
     def empty_string_to_none(cls, v):
         return check_str_for_non_value(v)
@@ -162,7 +173,7 @@ class ProceedingsBib(BaseModel):
     volume: int | None = Field(default=None)
     issue: int | None = Field(default=None)
     pages: str | None = Field(default=None)
-    doi: str | None = Field(default=None, alias="DOI")
+    doi: str | None = Field(default=None)
 
     @field_validator("id", "title", "conference", mode="before")
     @classmethod
@@ -172,11 +183,11 @@ class ProceedingsBib(BaseModel):
     @field_validator("authors", mode="before")
     @classmethod
     def check_authors(cls, v):
-        return check_authors(v)
+        return process_authors(v)
 
     @field_validator("volume", "issue", mode="before")
     @classmethod
-    def preprocess_year(cls, v):
+    def preprocess_int(cls, v):
         if isinstance(v, str):
             v = v.strip()
             if not v:
@@ -190,7 +201,7 @@ class ProceedingsBib(BaseModel):
         else:
             raise ValueError(f"year=\"{v}\" must be int or str")
 
-    @field_validator("extra_text", "pages", "place_and_date", "city", "publisher", "doi", mode="before")
+    @field_validator("pages", "place_and_date", "city", "publisher", "doi", mode="before")
     @classmethod
     def empty_string_to_none(cls, v):
         return check_str_for_non_value(v)
