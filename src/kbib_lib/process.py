@@ -1,14 +1,23 @@
-from typing import Literal
 import re
+from enum import Enum
+from pathlib import Path
 
-standard_vars = ["GOST", "APA"]
 kbib_lib_out_lang = "en"
 INCLUDE_DOI = True
 DOI_AS_URL = False
 
 
+class BibStandards(Enum):
+    GOST = 1
+    APA = 2
+
+
+def get_standard_vars() -> list[str]:
+    return [el.name for el in BibStandards]
+
+
 def get_raise_if_miss_standard() -> ValueError:
-    return ValueError(f"standard must be in {standard_vars}. ")
+    return ValueError(f"standard must be in {get_standard_vars()}. ")
 
 
 def get_words_by_lang() -> dict[str, str]:
@@ -40,7 +49,7 @@ def remove_dot_and_strip(s: str) -> str:
     return res
 
 
-def form_authors_str(standard: Literal["GOST", "APA"],
+def form_authors_str(standard: BibStandards,
                      authors: list[str]) -> str:
     authors = [el.strip() for el in authors]
     apa_del = "&"  # and
@@ -58,7 +67,7 @@ def form_authors_str(standard: Literal["GOST", "APA"],
     def add_dot_if_not(s: str) -> str:
         return s + "." if s[-1] != "." else s
 
-    if standard == "APA":
+    if standard == BibStandards.APA:
         if len(authors) == 1:
             last = add_dot_if_not(authors[-1])
             res = f"{last}"
@@ -67,7 +76,7 @@ def form_authors_str(standard: Literal["GOST", "APA"],
         else:
             last = add_dot_if_not(authors[-1])
             res = ", ".join(authors[:-1]) + f", {apa_del} " + last
-    elif standard == "GOST":
+    elif standard == BibStandards.GOST:
         if is_at_al(authors[-1]):
             authors = authors[:-1]
         if len(authors) == 1:
@@ -117,7 +126,7 @@ def form_doi_str(doi: str) -> str:
     return res
 
 
-def form_preprint(standard: Literal["GOST", "APA"],
+def form_preprint(standard: BibStandards,
                   title: str, authors: list[str],
                   year: int, publisher_and_id: str, doi: str | None) -> str:
     # words = get_words_by_lang()
@@ -129,9 +138,9 @@ def form_preprint(standard: Literal["GOST", "APA"],
         doi_str = f" {form_doi_str(doi)}."
     else:
         doi_str = ""
-    if standard == "APA":
+    if standard == BibStandards.APA:
         res = f"{authors_str} ({year}). {title}. {publisher_and_id}.{doi_str}"
-    elif standard == "GOST":
+    elif standard == BibStandards.GOST:
         res = f"{authors_str} {title} // {publisher_and_id}. – {year}.{doi_str}"
     else:
         raise get_raise_if_miss_standard()
@@ -139,7 +148,7 @@ def form_preprint(standard: Literal["GOST", "APA"],
     return res
 
 
-def form_book(standard: Literal["GOST", "APA"],
+def form_book(standard: BibStandards,
               title: str, authors: list[str],
               year: int, city: str, publisher: str,
               pages: str | None) -> str:
@@ -151,18 +160,18 @@ def form_book(standard: Literal["GOST", "APA"],
     if pages is not None:
         pages = remove_dot_and_strip(pages)
 
-    if standard == "APA":
+    if standard == BibStandards.APA:
         res = f"{authors_str} ({year}) {title}. {city}: {publisher}."
-    elif standard == "GOST":
+    elif standard == BibStandards.GOST:
         res = f"{authors_str} {title}. {city}: {publisher}, {year}."
     else:
         raise get_raise_if_miss_standard()
 
     if pages is not None:
         pp = words["pp"]
-        if standard == "APA":
+        if standard == BibStandards.APA:
             res = res[:-1] + f", {pp}. {pages}."
-        elif standard == "GOST":
+        elif standard == BibStandards.GOST:
             res += f" {pp}. {pages}."
         else:
             raise get_raise_if_miss_standard()
@@ -170,7 +179,7 @@ def form_book(standard: Literal["GOST", "APA"],
     return res
 
 
-def form_thesis(standard: Literal["GOST", "APA"],
+def form_thesis(standard: BibStandards,
                 title: str, authors: list[str],
                 year: int, city: str, publisher: str | None,
                 extra_text: str | None) -> str:
@@ -184,9 +193,9 @@ def form_thesis(standard: Literal["GOST", "APA"],
         publisher = remove_dot_and_strip(publisher)
         publisher = f": {publisher}"
 
-    if standard == "APA":
+    if standard == BibStandards.APA:
         res = f"{authors_str} ({year}) {title} (PhD Thesis). {city}{publisher}."
-    elif standard == "GOST":
+    elif standard == BibStandards.GOST:
         if extra_text is None:
             extra_text = ""
         else:
@@ -199,7 +208,7 @@ def form_thesis(standard: Literal["GOST", "APA"],
     return res
 
 
-def form_article(standard: Literal["GOST", "APA"],
+def form_article(standard: BibStandards,
                  title: str, authors: list[str],
                  year: int, journal: str,
                  volume: int | None,
@@ -217,12 +226,12 @@ def form_article(standard: Literal["GOST", "APA"],
     else:
         doi_str = ""
 
-    if standard == "APA":
+    if standard == BibStandards.APA:
         volume_str = "" if volume is None else f", {words['vol']}. {volume}"
         issue_str = "" if issue is None else f", {words['no']}. {issue}"
         pages_str = "" if pages is None else f", {words['pp']}. {pages}"
         res = f"{authors_str} ({year}) {title}. {journal}{volume_str}{issue_str}{pages_str}.{doi_str}"
-    elif standard == "GOST":
+    elif standard == BibStandards.GOST:
         volume_str = "" if volume is None else f" – {words['vol']}. {volume}."
         issue_str = "" if issue is None else f" – {words['no']}. {issue}."
         pages_str = "" if pages is None else f" – {words['pp']}. {pages}."
@@ -233,7 +242,7 @@ def form_article(standard: Literal["GOST", "APA"],
     return res
 
 
-def form_proceedings(standard: Literal["GOST", "APA"],
+def form_proceedings(standard: BibStandards,
                      title: str, authors: list[str],
                      year: int, conference: str,
                      city: str | None,
@@ -253,7 +262,7 @@ def form_proceedings(standard: Literal["GOST", "APA"],
     else:
         doi_str = ""
 
-    if standard == "APA":
+    if standard == BibStandards.APA:
         if city is not None and publisher is not None:
             city_publisher_str = " {city}: {publisher},"
         elif city is not None and publisher is None:
@@ -266,12 +275,12 @@ def form_proceedings(standard: Literal["GOST", "APA"],
         volume_str = "" if volume is None else f" {words['vol']}. {volume},"
         issue_str = "" if issue is None else f" {words['no']}. {issue},"
         pages_str = "" if pages is None else f" {words['pp']}. {pages},"
-        
+
         res = f"{authors_str} ({year}) {title}. {conference}.{city_publisher_str}"
         res += f"{volume_str}{issue_str}{pages_str}"
         res = res if res[-1] != "," else res[:-1] + "."
         res += f"{doi_str}"
-    elif standard == "GOST":
+    elif standard == BibStandards.GOST:
         city_str = "" if city is None else f" – {city}"
         if city_str == "":
             publisher_str = "" if publisher is None else f" – {publisher}"
@@ -287,3 +296,7 @@ def form_proceedings(standard: Literal["GOST", "APA"],
         raise get_raise_if_miss_standard()
 
     return res
+
+
+def form_bibs_from_yaml(yaml_path: Path, needed: list[str]) -> list[str]:
+    return []
