@@ -8,6 +8,7 @@ from kbib_lib.bib_classes import BibStandards, BibTypes, PreprintBib, BookBib, T
 kbib_lib_out_lang = "en"
 INCLUDE_DOI = True
 DOI_AS_URL = False
+MAX_AUTHORS = None
 
 
 def get_standard_vars() -> list[str]:
@@ -61,8 +62,22 @@ def form_authors_str(standard: BibStandards,
             return True
         elif s[-1] == "." and s[:-1] == "et al":
             return True
+        elif s == words["etal"]:
+            return True
+        elif s[-1] == "." and s[:-1] == words["etal"]:
+            return True
         else:
             return False
+
+    if is_at_al(authors[-1]):
+        authors[-1] = words["etal"]
+
+    if MAX_AUTHORS is not None:
+        if len(authors) <= MAX_AUTHORS:
+            pass
+        else:
+            authors = authors[:MAX_AUTHORS]
+            authors.append(words["etal"])
 
     def add_dot_if_not(s: str) -> str:
         return s + "." if s[-1] != "." else s
@@ -427,7 +442,7 @@ def form_bibs_from_yaml(yaml_path: Path) -> list[str]:
     settings = data["global"]
 
     needed: list[str] | None
-    if "needed" in settings:
+    if "needed" in settings and settings["needed"].strip() != "":
         buff = Path(settings["needed"])
         with open(buff, "r", encoding="utf-8") as fd:
             s = fd.read()
@@ -449,6 +464,11 @@ def form_bibs_from_yaml(yaml_path: Path) -> list[str]:
     DOI_AS_URL = settings["doi_as_url"]
     global kbib_lib_out_lang
     kbib_lib_out_lang = str(settings["target_lang"]).strip().lower()
+    global MAX_AUTHORS
+    if "max_authors" not in settings or settings["max_authors"] is None or str(settings["max_authors"]).strip() == "":
+        MAX_AUTHORS = None
+    else:
+        MAX_AUTHORS = int(settings.get("max_authors", None))
 
     bibs_dict = data["items"]
     bibs: list[Union[PreprintBib, BookBib, ThesisBib,

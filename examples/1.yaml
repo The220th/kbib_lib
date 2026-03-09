@@ -1,0 +1,62 @@
+global:
+  standard: APA  # APA or GOST
+  include_doi: False
+  doi_as_url: False
+  target_lang: "en"  # en or ru
+  max_authors: 10  # "" if no need
+  needed: "../examples/1_needed.txt"
+
+items:
+  Yao2022:
+    type: proceedings
+    title: "React: Synergizing reasoning and acting in language models"
+    authors:
+      - Yao S.
+      - Zhao J.
+      - Yu D.
+      - Du N.
+      - Shafran I.
+      - Narasimhan K. R.
+      - Cao Y.
+    year: 2023
+    conference: The eleventh international conference on learning representations
+    city: Kigali
+    doi: 10.48550/arXiv.2210.03629
+    file: 5016_react_synergizing_reasoning_an.pdf
+
+  Guo2024:
+    type: article
+    title: "Large language model based multi-agents: A survey of progress and challenges."
+    authors:
+      - Guo T.
+      - Chen X.
+      - Wang Y.
+      - Chang R.
+      - Pei S.
+      - Chawla N. V.
+      - Wiest O.
+      - Zhang X.
+    year: 2024
+    journal: Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence
+    volume: ""
+    issue: ""
+    pages: 8048–8057
+    place_and_date: ""
+    doi: 10.24963/ijcai.2024/890
+    file: 2402.01680v2.pdf
+
+  Cho2014:
+    type: preprint
+    title: Learning phrase representations using RNN encoder-decoder for statistical machine translation.
+    authors:
+      - Cho K.
+      - Van Merriënboer B.
+      - Gulcehre C.
+      - Bahdanau D.
+      - Bougares F.
+      - Schwenk H.
+      - Bengio Y.
+    year: 2014
+    publisher_and_id: "arXiv preprint. arXiv:1406.1078"
+    doi: "https://doi.org/10.48550/arXiv.1406.1078"
+    file: 1406.1078v3.pdf

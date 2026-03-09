@@ -1,0 +1,275 @@
+global:
+  standard: APA  # APA or GOST
+  include_doi: False
+  doi_as_url: False
+  target_lang: "en"  # en or ru
+  max_authors: 10  # "" if no need
+  needed: ""
+
+items:
+  Krizhevsky2012:
+    type: proceedings
+    title: ImageNet classification with deep convolutional neural networks.
+    authors:
+      - Krizhevsky A.
+      - Sutskever I.
+      - Hinton G. E.
+    year: 2012
+    conference: Advances in Neural Information Processing Systems 25 (NeurIPS 2012)
+    place_and_date: Lake Tahoe, NV, USA, 3–8 December 2012
+    city: New York, NY, USA
+    publisher: Association for Computing Machinery
+    volume: 60
+    issue: 6
+    pages: 84–90
+    doi: 10.1145/3065386
+
+  Vaswani2017:
+    type: proceedings
+    title: Attention is all you need.
+    authors:
+      - Vaswani A.
+      - Shazeer N.
+      - Parmar N.
+      - Uszkoreit J.
+      - Jones L.
+      - Gomez A. N.
+      - Kaiser L.
+      - Polosukhin I.
+    year: 2017
+    conference: Advances in Neural Information Processing Systems (NeurIPS 2017)
+    place_and_date: Long Beach, CA, USA, 4–9 December 2017
+    city: Red Hook, NY, USA
+    publisher: Curran Associates, Inc.
+    volume: 30
+    issue: ""
+    # pages: 5998–6008
+    doi: "10.48550/arXiv.1706.03762"
+
+  Watkins1989:
+    type: thesis
+    title: Learning from delayed rewards.
+    authors:
+      - Watkins C. J. C. H.  # Watkins Christopher John Cornish Hellaby
+    extra_text: ""  # "Автореф. дис. … д-ра техн. наук." or " Дис. … канд. философ. наук."
+    year: 1989
+    city: Cambridge
+    publisher: "King's College"
+
+  Brown2020:
+    type: proceedings
+    title: Language models are few-shot learners
+    authors:
+      - Brown T.
+      - Mann B.
+      - Ryder N.
+      - Subbiah M.
+      - Kaplan J.
+      - Dhariwal P.
+      - Neelakantan A.
+      - Shyam P.
+      - Sastry G.
+      - Askell A.
+      - Agarwal S.
+      - Herbert-Voss A.
+      - Krueger G.
+      - Henighan T.
+      - Child R.
+      - Ramesh A.
+      - Ziegler D.
+      - Wu J.
+      - Winter C.
+      - Hesse C.
+      - Chen M.
+      - Sigler E.
+      - Litwin M.
+      - Gray S.
+      - Chess B.
+      - Clark J.
+      - Berner C.
+      - McCandlish S.
+      - Radford A.
+      - Sutskever I.
+      - Amodei D.
+    year: 2020
+    conference: Advances in Neural Information Processing Systems (NeurIPS 2020)
+    place_and_date: Virtual, 6–12 December 2020
+    city: Red Hook, NY, USA
+    publisher: Curran Associates, Inc.
+    volume: 33
+    issue: ""
+    pages: 1877–1901
+    doi: "10.48550/arXiv.2005.14165"
+
+  Oquab2023:
+    type: preprint
+    title: "Dinov2: Learning robust visual features without supervision"
+    authors:
+      - Oquab M.
+      - Darcet T.
+      - Moutakanni T.
+      - Vo H.
+      - Szafraniec M.
+      - Khalidov V.
+      - Fernandez P.
+      - Haziza D.
+      - Massa F.
+      - El-Nouby A.
+      - Assran M.
+      - Ballas N.
+      - Galuba W.
+      - Howes R.
+      - Huang P.-Y.
+      - Li S.-W.
+      - Misra I.
+      - Rabbat M.
+      - Sharma V.
+      - Synnaeve G.
+      - Xu H.
+      - Jegou H.
+      - Mairal J.
+      - Labatut P.
+      - Joulin A.
+      - Bojanowski P.
+    year: 2023
+    publisher_and_id: "arXiv preprint arXiv:2304.07193"
+    doi: "10.48550/arXiv.2304.07193"
+
+  Su2024:
+    type: article
+    title: "RoFormer: Enhanced transformer with rotary position embedding"
+    authors:
+      - Su J.
+      - Ahmed M.
+      - Lu Y.
+      - Pan S.
+      - Bo W.
+      - Liu Y.
+    year: 2024
+    journal: Neurocomputing
+    volume: 568
+    issue: ""
+    pages: 127063
+    doi: "10.1016/j.neucom.2023.127063"
+
+  Llama2_2024:
+    type: preprint
+    title: The Llama 3 herd of models.
+    authors:
+      - Grattafiori A.
+      - Dubey A.
+      - Jauhri A.
+      - Pandey A.
+      - Kadian A.
+      - Al-Dahle A.
+      - Letman A.
+      - Mathur A.
+      - Schelten A.
+      - Vaughan A.
+      - Yang A.
+      - Fan A.
+      - et al
+    year: 2024
+    publisher_and_id: "arXiv preprint arXiv:2407.21783"
+    doi: 10.48550/arXiv.2407.21783
+
+  Shannon1951:
+    type: proceedings
+    title: Presentation of a maze-solving machine
+    authors:
+      - Shannon C. E.
+    year: 1951
+    conference: "Cybernetics: Circular, Causal and Feedback Mechanisms in Biological and Social Systems, Transactions Eighth Conference"
+    place_and_date: New York, March 15–16, 1951
+    city: New York
+    publisher: Josiah Macy, Jr. Foundation
+    volume: ""
+    issue: ""
+    pages: 173–180
+    doi: ""
+
+  Samuel1959:
+    type: article
+    title: Some studies in machine learning using the game of checkers.
+    authors:
+      - Samuel A. L.
+    year: 1959
+    journal: IBM Journal of Research and Development
+    volume: 3
+    issue: 3
+    pages: 210–229
+    doi: 10.1147/rd.33.0210
+
+  Rumelhart1986:
+    type: article
+    title: Learning representations by back-propagating errors
+    authors:
+      - Rumelhart D. E.
+      - Hinton G. E.
+      - Williams R. J.
+    year: 1986
+    journal: Nature
+    volume: 323
+    issue: 6088
+    pages: 533–536
+    doi: 10.1038/323533a0
+
+  Sutton1998:
+    type: book
+    title: "Reinforcement learning: An introduction"
+    authors:
+      - Sutton R. S.  # Sutton Richard S.
+      - Barto A. G.  # Andrew G. Barto.
+    year: 1998
+    city: Cambridge, MA
+    publisher: MIT Press
+    pages: ""
+
+  LeCun1998:
+    type: article
+    title: Gradient-based learning applied to document recognition.
+    authors:
+      - LeCun Y.
+      - Bottou L.
+      - Bengio Y.
+      - Haffner P.
+    year: 1998
+    journal: Proceedings of the IEEE
+    volume: 86
+    issue: 11
+    pages: 2278–2324
+    doi: 10.1109/5.726791
+
+  Ouyang2022:
+    type: proceedings
+    title: Training language models to follow instructions with human feedback.
+    authors:
+      - Ouyang L.
+      - Wu J.
+      - Jiang X.
+      - Almeida D.
+      - Wainwright C.
+      - Mishkin P.
+      - Zhang C.
+      - Agarwal S.
+      - Slama K.
+      - Ray A.
+      - Schulman J.
+      - Hilton J.
+      - Kelton F.
+      - Miller L.
+      - Simens M.
+      - Askell A.
+      - Welinder P.
+      - Christiano P.
+      - Leike J.
+      - Lowe R.
+    year: 2022
+    conference: Advances in Neural Information Processing Systems (NeurIPS 2022)
+    place_and_date: New Orleans, USA, 28 Nov – 9 Dec 2022
+    city: Red Hook, NY, USA
+    publisher: Curran Associates, Inc.
+    volume: 35
+    issue: ""
+    pages: 27730–27744
+    doi: "10.48550/arXiv.2203.02155"
