@@ -435,20 +435,20 @@ def bibs_to_str(bibs: list[Union[PreprintBib, BookBib, ThesisBib, ArticleBib, Pr
     return res
 
 
-def form_bibs_from_yaml(yaml_path: Path) -> list[str]:
+def form_bibs_from_yaml(yaml_path: Path, needed: list[str] | None = None) -> list[str]:
     with open(yaml_path, "r", encoding="utf-8") as fd:
         data = yaml.safe_load(fd)
 
     settings = data["global"]
 
-    needed: list[str] | None
-    if "needed" in settings and settings["needed"].strip() != "":
-        buff = Path(settings["needed"])
-        with open(buff, "r", encoding="utf-8") as fd:
-            s = fd.read()
-        needed = [line for line in s.split("\n") if line]
-    else:
-        needed = None
+    if needed is None:
+        if "needed" in settings and settings["needed"].strip() != "":
+            buff = Path(settings["needed"])
+            with open(buff, "r", encoding="utf-8") as fd:
+                s = fd.read()
+            needed = [line for line in s.split("\n") if line]
+        else:
+            needed = None
 
     standard_set = str(settings["standard"]).strip().upper()
     for existing_standard_i in BibStandards:

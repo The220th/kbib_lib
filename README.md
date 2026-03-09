@@ -2,6 +2,10 @@
 
 Python lib for forming bibliography.
 
+# Docs
+
+Coming soon... mb
+
 # Run
 
 ## from pip
